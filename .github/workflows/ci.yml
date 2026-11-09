@@ -74,7 +74,7 @@ jobs:
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: libdiginet, built from its main
         run: |
-          git clone --depth 1 --branch "$SIBLING_BRANCH" https://github.com/FreeMixer/libdiginet.git ../libdiginet
+          git clone --depth 1 --branch "$SIBLING_BRANCH" https://github.com/Open-Mixer/libdiginet.git ../libdiginet
           make -C ../libdiginet libdiginet.a libdiginet-transport.a libdiginet-emu.a tools/diginet-packet-helper
       - name: Build, the module required
         run: make DIGINET_SRC=../libdiginet DIGINET=yes
@@ -97,7 +97,7 @@ jobs:
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0 || true
       - name: libdiginet
         run: |
-          git clone --depth 1 --branch "${SIBLING_BRANCH:-main}" https://github.com/FreeMixer/libdiginet.git ../libdiginet
+          git clone --depth 1 --branch "${SIBLING_BRANCH:-main}" https://github.com/Open-Mixer/libdiginet.git ../libdiginet
           make -C ../libdiginet libdiginet.a libdiginet-transport.a libdiginet-emu.a tools/diginet-packet-helper
       - name: The module's tests
         run: make DIGINET_SRC=../libdiginet DIGINET=yes test-diginet 2>&1 | tee test.log; test "${PIPESTATUS[0]}" -eq 0
@@ -128,7 +128,7 @@ jobs:
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: libmackie, built from its main
         run: |
-          git clone --depth 1 --branch "$SIBLING_BRANCH" https://github.com/FreeMixer/libmackie.git ../libmackie
+          git clone --depth 1 --branch "$SIBLING_BRANCH" https://github.com/Open-Mixer/libmackie.git ../libmackie
           make -C ../libmackie libmackie.a
       - name: Build, the module required
         run: make MACKIE_SRC=../libmackie MACKIE=yes
@@ -138,6 +138,6 @@ jobs:
         run: make MACKIE_SRC=../libmackie MACKIE=yes shared
 
   # the checks every FreeMixer repository runs on what it publishes: commit messages, private references, and no
-  # local copy of either (FreeMixer/.github's public-sources-check)
+  # local copy of either (Open-Mixer/.github's public-sources-check)
   public-sources:
-    uses: FreeMixer/.github/.github/workflows/public-sources-check.yml@v1
+    uses: Open-Mixer/.github/.github/workflows/public-sources-check.yml@main
