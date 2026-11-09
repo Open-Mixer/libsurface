@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   rpm:
-    uses: Open-Mixer/.github/.github/workflows/build-rpm.yml@main
+    uses: Open-Mixer/.github/.github/workflows/build-rpm.yml@openmixer-v1
     with:
       package-name: libsurface
       binary-names: libsurface libsurface-devel libsurface-diginet libsurface-diginet-devel libsurface-mackie libsurface-mackie-devel surface-c24
@@ -39,7 +39,7 @@ jobs:
   # or skipped RPM job skips this one, so no DEB is published after a failed RPM.
   deb:
     needs: rpm
-    uses: Open-Mixer/.github/.github/workflows/build-deb.yml@main
+    uses: Open-Mixer/.github/.github/workflows/build-deb.yml@openmixer-v1
     with:
       package-name: libsurface
       binary-names: libsurface0 libsurface-dev libsurface-diginet0 libsurface-diginet-dev libsurface-mackie0 libsurface-mackie-dev surface-c24
