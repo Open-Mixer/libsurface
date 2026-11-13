@@ -77,7 +77,7 @@ HAVE_DIGINET := $(shell printf '\043include <diginet/transport/diginet_mux.h>\n'
 	$(CC) $(DIGINET_CFLAGS) -E -x c - >/dev/null 2>&1 && echo yes)
 endif
 DIGINET_NONE := libdiginet with the desk mux (diginet/transport/diginet_mux.h) was not found: \
-	install libdiginet 0.1.4 or later, or set DIGINET_SRC to a built libdiginet tree
+	install libdiginet 0.1.10 or later, or set DIGINET_SRC to a built libdiginet tree
 ifeq ($(DIGINET),no)
 DIGINET_NONE := DIGINET=no
 endif
