@@ -9,7 +9,7 @@ name: release
 #
 # Either way, the core's packages the run built are then installed in clean containers of every
 # release and architecture, and a consumer is built against the development package
-# (tests/package-check.sh). The DigiNet module's packages need libdiginet 0.1.4 or later and the
+# (tests/package-check.sh). The DigiNet module's packages need libdiginet 0.1.10 or later and the
 # Mackie module's libmackie 0.1.0 or later, which the build takes from the OpenMixer channel
 # (channel-deps), and the shared workflows install them against that channel.
 
