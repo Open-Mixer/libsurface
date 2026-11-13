@@ -282,11 +282,11 @@ test: $(TESTS) $(KEYS_TEST) $(UB_TEST)
 	@$(MAKE) --no-print-directory test-mackie
 
 # No tracked file points into a private repository: Open-Mixer/.github's private-refs check, from a
-# checkout of it (FREEMIXER_DOTGITHUB, else ../freemixer-dotgithub). CI runs it, with the commit
+# checkout of it (OPENMIXER_DOTGITHUB, else ../freemixer-dotgithub). CI runs it, with the commit
 # message check, through the public-sources-check workflow; `make test` does not need it.
-FREEMIXER_DOTGITHUB ?= ../freemixer-dotgithub
+OPENMIXER_DOTGITHUB ?= ../freemixer-dotgithub
 public-sources:
-	$(FREEMIXER_DOTGITHUB)/.github/actions/private-refs-check/check.sh .
+	$(OPENMIXER_DOTGITHUB)/.github/actions/private-refs-check/check.sh .
 
 # The pkg-config file is written at install time, from the install's own PREFIX and LIBDIR: a
 # file kept from an earlier build would name that build's directories.
