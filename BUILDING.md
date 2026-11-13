@@ -46,10 +46,10 @@ The script checks: `constants-check.sh` (each timing constant declared once, in 
 `test_install.sh` (a consumer builds against an installed tree through pkg-config alone),
 and `test_workflows.sh` (the workflows parse).
 
-What the repository publishes is checked by FreeMixer/.github's shared checks, which CI runs
+What the repository publishes is checked by Open-Mixer/.github's shared checks, which CI runs
 through its `public-sources-check` workflow: a pull request's commit messages carry no
 attribution line, and no tracked file points into a private repository. `make public-sources`
-runs the second from a checkout of FreeMixer/.github (`FREEMIXER_DOTGITHUB`, else
+runs the second from a checkout of Open-Mixer/.github (`FREEMIXER_DOTGITHUB`, else
 `../freemixer-dotgithub`). The commit-msg hook in `.githooks/` runs the first; enable it once
 per clone with `git config core.hooksPath .githooks`.
 

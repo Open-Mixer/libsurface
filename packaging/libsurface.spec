@@ -22,7 +22,7 @@ Release:        1%{?dist}
 Summary:        Motor faders, touch and banks for any motorised control surface
 
 License:        GPL-3.0-or-later
-URL:            https://github.com/FreeMixer/libsurface
+URL:            https://github.com/Open-Mixer/libsurface
 Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  gcc

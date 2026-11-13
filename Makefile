@@ -281,7 +281,7 @@ test: $(TESTS) $(KEYS_TEST) $(UB_TEST)
 	@$(MAKE) --no-print-directory test-diginet
 	@$(MAKE) --no-print-directory test-mackie
 
-# No tracked file points into a private repository: FreeMixer/.github's private-refs check, from a
+# No tracked file points into a private repository: Open-Mixer/.github's private-refs check, from a
 # checkout of it (FREEMIXER_DOTGITHUB, else ../freemixer-dotgithub). CI runs it, with the commit
 # message check, through the public-sources-check workflow; `make test` does not need it.
 FREEMIXER_DOTGITHUB ?= ../freemixer-dotgithub

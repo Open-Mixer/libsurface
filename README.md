@@ -2,7 +2,7 @@
 
 The device behaviour of a motorised control surface, written once in C for every surface and every host: the motor-fader policy, touch, the bank window, a shadow of the whole board and its replay, meter steps and LED ring rendering. A Behringer X-Touch, a Digidesign Control|24 and, later, a ProControl run on the same code; a mixer or DAW links it and keeps only its mixing semantics (what a strip shows, names, colours, its verbs).
 
-It speaks no wire, owns no socket, thread or clock, and knows no channel or verb. The core is one library; each device family is an optional module with its own library and package: `libsurface-mackie` (the X-Touch, over [libmackie](https://github.com/FreeMixer/libmackie)) and `libsurface-diginet` (the Control|24, over [libdiginet](https://github.com/FreeMixer/libdiginet)), with `surface-c24`, a tool that drives a desk through the whole stack.
+It speaks no wire, owns no socket, thread or clock, and knows no channel or verb. The core is one library; each device family is an optional module with its own library and package: `libsurface-mackie` (the X-Touch, over [libmackie](https://github.com/Open-Mixer/libmackie)) and `libsurface-diginet` (the Control|24, over [libdiginet](https://github.com/Open-Mixer/libdiginet)), with `surface-c24`, a tool that drives a desk through the whole stack.
 
 ## Install
 
