@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Pau Aliagas <linuxnow@gmail.com>
 Build-Depends: debhelper-compat (= 13), git, pkgconf, libdiginet-dev (>= 0.1.8~), libdiginet-dev (<< 0.2~), libmackie-dev (>= 0.1.0~), libmackie-dev (<< 0.2~)
 Standards-Version: 4.6.2
-Homepage: https://github.com/FreeMixer/libsurface
+Homepage: https://github.com/Open-Mixer/libsurface
 Rules-Requires-Root: no
 
 Package: libsurface0
