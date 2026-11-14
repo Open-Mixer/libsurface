@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:222 (return SURFACE_E_ARG; -> return SURFACE_OK;).
+Breaks the check of fuzz/fuzz_motor.c:224 (return SURFACE_E_ARG; -> return SURFACE_OK;).
 Caught by the seed input "refusal" of fuzz_motor.
 
 diff --git a/src/motor.c b/src/motor.c

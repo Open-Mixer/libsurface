@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:244 (.key = key, .on = pressed ? 1 : 0 -> .key = key, .on = pressed & 1).
+Breaks the check of fuzz/fuzz_motor.c:246 (.key = key, .on = pressed ? 1 : 0 -> .key = key, .on = pressed & 1).
 Caught by the seed input "passthrough" of fuzz_motor.
 
 diff --git a/src/surface.c b/src/surface.c
