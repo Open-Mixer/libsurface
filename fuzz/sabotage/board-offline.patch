@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:293 (A device that is offline gets no call, whatever is written).
+Breaks the check of fuzz/fuzz_board.c:295 (A device that is offline gets no call, whatever is written).
 Caught by the seed input "offline-writes" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c

@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:420 (if s->leds[i].used -> if s->leds[i].used && i).
+Breaks the check of fuzz/fuzz_board.c:422 (if s->leds[i].used -> if s->leds[i].used && i).
 Caught by the seed input "replay" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c

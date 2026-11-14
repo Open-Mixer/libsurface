@@ -262,7 +262,9 @@ FUZZ_CHECK check_create(const struct surface_geometry *g, int rc, const struct s
 	 * contract: surface.h surface_create ("A new surface is offline until surface_in_online()"),
 	 * surface_geometry_of
 	 * mutant: src/surface.c:116 `return s ? s->online : 0;` -> `return s ? !s->online : 0;`
-	 * input: geometry-2 */
+	 * input: geometry-2
+	 * mutant: src/surface.c:92 `s->g = c->geometry;` -> `s->g = c->geometry; s->g.meter_keepalive_ms = 0;`
+	 * input: online-blank */
 	if (s && (surface_online(s) || surface_geometry_of(s)->strips != g->strips ||
 		  surface_geometry_of(s)->fader_max != g->fader_max))
 		abort();

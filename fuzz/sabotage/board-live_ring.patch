@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:328 (A ring written on an online device reaches it once, as the mask surface.h renders).
+Breaks the check of fuzz/fuzz_board.c:330 (A ring written on an online device reaches it once, as the mask surface.h renders).
 Caught by the seed input "ring-modes" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c
