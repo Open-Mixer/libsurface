@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:307 (return l ? rc : SURFACE_E_FULL; -> return rc;).
+Breaks the check of fuzz/fuzz_board.c:319 (return l ? rc : SURFACE_E_FULL; -> return rc;).
 Caught by the seed input "led-full" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c
