@@ -8,7 +8,7 @@
 %bcond_without diginet
 %bcond_without mackie
 Name:           libsurface
-Version:        0.2.3
+Version:        0.2.4
 # The soname's major. rpm derives this package's provides and every consumer's requires from it.
 # It copies SURFACE_ABI of include/surface/surface.h, and tests/conformance-packaging.sh (in make
 # test) refuses a copy that disagrees.
@@ -31,10 +31,10 @@ BuildRequires:  git-core
 BuildRequires:  pkgconf-pkg-config
 %if %{with diginet}
 # the desk mux (diginet/transport/diginet_mux.h) is in libdiginet from 0.1.4
-BuildRequires:  (pkgconfig(libdiginet-transport) >= 0.1.4 with pkgconfig(libdiginet-transport) < 0.2)
+BuildRequires:  (pkgconfig(libdiginet-transport) >= 0.1.10 with pkgconfig(libdiginet-transport) < 0.2)
 # the module's tests run on libdiginet's desk emulator and child harness (emu_child.h), installed
 # as test support from 0.1.8
-BuildRequires:  (pkgconfig(libdiginet-emu) >= 0.1.8 with pkgconfig(libdiginet-emu) < 0.2)
+BuildRequires:  (pkgconfig(libdiginet-emu) >= 0.1.10 with pkgconfig(libdiginet-emu) < 0.2)
 %endif
 %if %{with mackie}
 BuildRequires:  (pkgconfig(libmackie) >= 0.1.0 with pkgconfig(libmackie) < 0.2)
@@ -62,7 +62,7 @@ Its documentation is on openmixer.org.
 Summary:        A Digidesign Control|24 under libsurface, over DigiNet
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 # the soname alone does not say it: the desk mux is in libdiginet from 0.1.4
-Requires:       (libdiginet%{?_isa} >= 0.1.4 with libdiginet%{?_isa} < 0.2)
+Requires:       (libdiginet%{?_isa} >= 0.1.10 with libdiginet%{?_isa} < 0.2)
 
 %description -n libsurface-diginet
 libsurface-diginet is libsurface's DigiNet module: a Digidesign Control|24 driven by libsurface's
@@ -86,7 +86,7 @@ Its documentation is on openmixer.org.
 Summary:        Drive a Control|24 through libsurface, with no privilege of its own
 Requires:       libsurface-diginet%{?_isa} = %{version}-%{release}
 # the packet socket comes from diginet-packet-helper
-Requires:       (diginet-tools >= 0.1.4 with diginet-tools < 0.2)
+Requires:       (diginet-tools >= 0.1.10 with diginet-tools < 0.2)
 
 %description -n surface-c24
 surface-c24 takes its packet socket from diginet-packet-helper, attaches the first Control|24
@@ -187,6 +187,10 @@ make CFLAGS="%{optflags}" %{mkflags} test
 %endif
 
 %changelog
+* Fri Nov 13 2026 Pau Aliagas <linuxnow@gmail.com> - 0.2.4-1
+- libdiginet floor 0.1.10 (the census release), ceiling < 0.2.
+- No change to the library ABI.
+
 * Thu Nov 05 2026 Pau Aliagas <linuxnow@gmail.com> - 0.2.3-1
 - surface_colour no longer copies from a NULL list of length 0.
 - The fuzz harnesses follow the OSS Verify build contract; the key a backend
