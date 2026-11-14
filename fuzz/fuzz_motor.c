@@ -133,6 +133,8 @@ FUZZ_CHECK check_event_position(const struct surface_event *ev)
 	 * contract: surface.h SURFACE_EV_FADER_MOVED ("position 0..1"), SURFACE_EV_FADER_RELEASED
 	 * ("position: where the hand left it")
 	 * mutant: src/surface.c:267 `if (raw > s->g.fader_max)` -> `if (raw > s->g.fader_max + 1)`
+	 * input: report-edges
+	 * mutant: src/surface.c:283 `.position = pos,` -> `.position = 1 - pos,`
 	 * input: report-edges */
 	if (!(ev->position >= 0 && ev->position <= 1) || ev->strip >= W.nstrips)
 		abort();

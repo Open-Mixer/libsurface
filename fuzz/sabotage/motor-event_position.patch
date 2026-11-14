@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:138 (if raw > s->g.fader_max -> if raw > s->g.fader_max + 1).
+Breaks the check of fuzz/fuzz_motor.c:140 (if raw > s->g.fader_max -> if raw > s->g.fader_max + 1).
 Caught by the seed input "report-edges" of fuzz_motor.
 
 diff --git a/src/surface.c b/src/surface.c

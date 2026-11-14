@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:274 (st->release_at <= now_us -> st->release_at < now_us).
+Breaks the check of fuzz/fuzz_motor.c:276 (st->release_at <= now_us -> st->release_at < now_us).
 Caught by the seed input "clock-c24" of fuzz_motor.
 
 diff --git a/src/surface.c b/src/surface.c

@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:264 (f->flush_at > now_us -> f->flush_at > now_us + 1000000).
+Breaks the check of fuzz/fuzz_motor.c:266 (f->flush_at > now_us -> f->flush_at > now_us + 1000000).
 Caught by the seed input "clock" of fuzz_motor.
 
 diff --git a/src/motor.c b/src/motor.c
