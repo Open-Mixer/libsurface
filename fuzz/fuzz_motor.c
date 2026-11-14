@@ -129,12 +129,16 @@ static const struct surface_backend_ops ops = {
 
 FUZZ_CHECK check_event_position(const struct surface_event *ev)
 {
-	/* A fader report and a release say where the cap is, 0..1; a move is raw / fader_max.
+	/* A fader report and a release say where the cap is, 0..1; a move is raw / fader_max, from the
+	 * raw do_fader reported, held to the range.
 	 * contract: surface.h SURFACE_EV_FADER_MOVED ("position 0..1"), SURFACE_EV_FADER_RELEASED
 	 * ("position: where the hand left it")
 	 * mutant: src/surface.c:267 `if (raw > s->g.fader_max)` -> `if (raw > s->g.fader_max + 1)`
+	 * input: report-edges
+	 * mutant: src/surface.c:283 `.position = pos,` -> `.position = 1 - pos,`
 	 * input: report-edges */
-	if (!(ev->position >= 0 && ev->position <= 1) || ev->strip >= W.nstrips)
+	if (!(ev->position >= 0 && ev->position <= 1) || ev->strip >= W.nstrips ||
+	    (ev->kind == SURFACE_EV_FADER_MOVED && ev->position != (double)W.last_raw[ev->strip] / W.g.fader_max))
 		abort();
 }
 

@@ -249,6 +249,19 @@ static int spec_geometry_ok(const struct surface_geometry *g)
 		g->scribble_chars <= SPEC_MAX_SCRIBBLE_CHARS;
 }
 
+/* Two geometries are the same field by field (a struct compare would read the padding too). */
+static int geometry_same(const struct surface_geometry *a, const struct surface_geometry *b)
+{
+	return a->strips == b->strips && a->has_master == b->has_master &&
+		a->fader_max == b->fader_max && a->motor_epsilon_q == b->motor_epsilon_q &&
+		a->meter_segments == b->meter_segments && a->meter_sides == b->meter_sides &&
+		a->meter_keepalive_ms == b->meter_keepalive_ms && a->ring_leds == b->ring_leds &&
+		a->scribble_rows == b->scribble_rows && a->scribble_chars == b->scribble_chars &&
+		a->counter_digits == b->counter_digits && a->touch_hold_ms == b->touch_hold_ms &&
+		a->touch_release_debounce_ms == b->touch_release_debounce_ms &&
+		a->reports_motor_moves == b->reports_motor_moves && a->holds_setpoint == b->holds_setpoint;
+}
+
 FUZZ_CHECK check_create(const struct surface_geometry *g, int rc, const struct surface *s)
 {
 	/* A geometry inside the sizes makes a surface, any other is refused with SURFACE_E_ARG and
@@ -258,13 +271,14 @@ FUZZ_CHECK check_create(const struct surface_geometry *g, int rc, const struct s
 	 * input: geometry-1 */
 	if (spec_geometry_ok(g) ? rc != SPEC_OK || !s : rc != SPEC_E_ARG || s)
 		abort();
-	/* A new surface is offline, and its geometry is the one it was given.
+	/* A new surface is offline, and its geometry is the one it was given, field by field.
 	 * contract: surface.h surface_create ("A new surface is offline until surface_in_online()"),
 	 * surface_geometry_of
 	 * mutant: src/surface.c:116 `return s ? s->online : 0;` -> `return s ? !s->online : 0;`
-	 * input: geometry-2 */
-	if (s && (surface_online(s) || surface_geometry_of(s)->strips != g->strips ||
-		  surface_geometry_of(s)->fader_max != g->fader_max))
+	 * input: geometry-2
+	 * mutant: src/surface.c:92 `s->g = c->geometry;` -> `s->g = c->geometry; s->g.meter_keepalive_ms = 0;`
+	 * input: online-blank */
+	if (s && (surface_online(s) || !geometry_same(surface_geometry_of(s), g)))
 		abort();
 }
 

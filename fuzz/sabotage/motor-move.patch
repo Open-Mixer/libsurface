@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:195 (if report -> if 0 && report).
+Breaks the check of fuzz/fuzz_motor.c:199 (if report -> if 0 && report).
 Caught by the seed input "report" of fuzz_motor.
 
 diff --git a/src/surface.c b/src/surface.c

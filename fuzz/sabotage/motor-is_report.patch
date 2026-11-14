@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:210 (<= s->g.motor_epsilon_q -> < s->g.motor_epsilon_q).
+Breaks the check of fuzz/fuzz_motor.c:214 (<= s->g.motor_epsilon_q -> < s->g.motor_epsilon_q).
 Caught by the seed input "report" of fuzz_motor.
 
 diff --git a/src/surface.c b/src/surface.c
