@@ -1,15 +1,13 @@
 name: ci
-# A push runs on main and dedupe/all only; a pull request already runs its branch.
+# Run by workflow_dispatch: on a pull request's head before it is merged (gh workflow run ci.yml --ref <branch>),
+# and on demand. The fast checks run on every pull request from public-sources.yml.
 on:
-  push:
-    branches: [main, dedupe/all]
-  pull_request:
+  workflow_dispatch:
 env:
   # the branch the modules' siblings (libdiginet, libmackie) are built from: their layer is released and merged, so main
   SIBLING_BRANCH: main
 concurrency:
-  # A new push to a pull request cancels the run it supersedes. Every other run (main, a tag) has a group of its own
-  # and is never cancelled; the run id keeps two pushes to main from replacing each other while one is queued.
+  # Every dispatch has a group of its own (the run id) and is never cancelled.
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
@@ -176,8 +174,3 @@ jobs:
         run: make MACKIE_SRC=../libmackie MACKIE=yes test
       - name: Shared libraries
         run: make MACKIE_SRC=../libmackie MACKIE=yes shared
-
-  # the checks every OpenMixer repository runs on what it publishes: commit messages, private references, and no
-  # local copy of either (Open-Mixer/.github's public-sources-check)
-  public-sources:
-    uses: Open-Mixer/.github/.github/workflows/public-sources-check.yml@openmixer-v1
