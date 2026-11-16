@@ -31,13 +31,13 @@ BuildRequires:  git-core
 BuildRequires:  pkgconf-pkg-config
 %if %{with diginet}
 # the desk mux (diginet/transport/diginet_mux.h) is in libdiginet from 0.1.4
-BuildRequires:  (pkgconfig(libdiginet-transport) >= 0.1.10 with pkgconfig(libdiginet-transport) < 0.2)
+BuildRequires:  pkgconfig(libdiginet-transport) >= 0.1.10
 # the module's tests run on libdiginet's desk emulator and child harness (emu_child.h), installed
 # as test support from 0.1.8
-BuildRequires:  (pkgconfig(libdiginet-emu) >= 0.1.10 with pkgconfig(libdiginet-emu) < 0.2)
+BuildRequires:  pkgconfig(libdiginet-emu) >= 0.1.10
 %endif
 %if %{with mackie}
-BuildRequires:  (pkgconfig(libmackie) >= 0.1.0 with pkgconfig(libmackie) < 0.2)
+BuildRequires:  pkgconfig(libmackie) >= 0.1.0
 %endif
 
 %description
@@ -62,7 +62,7 @@ Its documentation is on openmixer.org.
 Summary:        A Digidesign Control|24 under libsurface, over DigiNet
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 # the soname alone does not say it: the desk mux is in libdiginet from 0.1.4
-Requires:       (libdiginet%{?_isa} >= 0.1.10 with libdiginet%{?_isa} < 0.2)
+Requires:       libdiginet%{?_isa} >= 0.1.10
 
 %description -n libsurface-diginet
 libsurface-diginet is libsurface's DigiNet module: a Digidesign Control|24 driven by libsurface's
@@ -86,7 +86,7 @@ Its documentation is on openmixer.org.
 Summary:        Drive a Control|24 through libsurface, with no privilege of its own
 Requires:       libsurface-diginet%{?_isa} = %{version}-%{release}
 # the packet socket comes from diginet-packet-helper
-Requires:       (diginet-tools >= 0.1.10 with diginet-tools < 0.2)
+Requires:       diginet-tools >= 0.1.10
 
 %description -n surface-c24
 surface-c24 takes its packet socket from diginet-packet-helper, attaches the first Control|24
@@ -113,7 +113,7 @@ Its documentation is on openmixer.org.
 Summary:        Development files for libsurface-mackie
 Requires:       libsurface-mackie%{?_isa} = %{version}-%{release}
 Requires:       %{name}-devel%{?_isa} = %{version}-%{release}
-Requires:       (pkgconfig(libmackie) >= 0.1.0 with pkgconfig(libmackie) < 0.2)
+Requires:       pkgconfig(libmackie) >= 0.1.0
 
 %description -n libsurface-mackie-devel
 The header and the pkg-config file (libsurface-mackie) for building a host that drives an MCU

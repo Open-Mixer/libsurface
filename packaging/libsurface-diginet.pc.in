@@ -5,6 +5,6 @@ includedir=@INCDIR@
 Name: libsurface-diginet
 Description: libsurface's DigiNet module: a Control|24 under libsurface, over libdiginet's desk mux
 Version: @VERSION@
-Requires: libsurface libdiginet-transport >= 0.1.4, libdiginet-transport < 0.2
+Requires: libsurface libdiginet-transport >= 0.1.4
 Libs: -L${libdir} -lsurface-diginet
 Cflags: -I${includedir}
