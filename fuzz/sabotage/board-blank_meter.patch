@@ -1,0 +1,16 @@
+Breaks the check of fuzz/fuzz_board.c:432 (a blanked strip shows a full meter).
+Caught by the seed input "online-blank" of fuzz_board.
+
+diff --git a/src/surface.c b/src/surface.c
+index 81d7b56..42f6406 100644
+--- a/src/surface.c
++++ b/src/surface.c
+@@ -450,7 +450,7 @@ int surface_blank_strip(struct surface *s, unsigned strip)
+ 	struct strip_state *st = &s->strip[strip];
+ 	for (unsigned side = 0; side < s->g.meter_sides; side++) {
+ 		st->meter_step[side] = -1;
+-		if (s->online && s->ops.meter(s->backend, strip, side, 0) > 0)
++		if (s->online && s->ops.meter(s->backend, strip, side, s->g.meter_segments) > 0)
+ 			st->meter_step[side] = 0;
+ 	}
+ 	uint64_t never = 0;   /* a held cap is skipped: the self-heal reads no clock here */

@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:288 (UINT64_MAX -> 0).
+Breaks the check of fuzz/fuzz_motor.c:317 (UINT64_MAX -> 0).
 Caught by the seed input "clock" of fuzz_motor.
 
 diff --git a/src/motor.c b/src/motor.c

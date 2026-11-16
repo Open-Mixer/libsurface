@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:129 (s->g.scribble_chars : 0; -> s->g.scribble_chars + 1 : 0;).
+Breaks the check of fuzz/fuzz_board.c:134 (s->g.scribble_chars : 0; -> s->g.scribble_chars + 1 : 0;).
 Caught by the seed input "scribbles" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c

@@ -1,0 +1,16 @@
+Breaks the check of fuzz/fuzz_motor.c:164 (a release after a report is at the mirrored position).
+Caught by the seed input "release-position" of fuzz_motor.
+
+diff --git a/src/surface.c b/src/surface.c
+index 81d7b56..2472aab 100644
+--- a/src/surface.c
++++ b/src/surface.c
+@@ -145,7 +145,7 @@ static double strip_position(const struct surface *s, const struct strip_state *
+ 			     surface_target t)
+ {
+ 	if (st->have_report)
+-		return (double)st->last_raw / s->g.fader_max;
++		return 1 - (double)st->last_raw / s->g.fader_max;
+ 	struct fader_state *f = motor_find((struct surface *)s, t);
+ 	return f ? f->target : 0;
+ }

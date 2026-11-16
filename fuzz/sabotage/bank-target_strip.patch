@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_bank.c:181 (if !s || !t -> if !s).
+Breaks the check of fuzz/fuzz_bank.c:182 (if !s || !t -> if !s).
 Caught by the seed input "repeats" of fuzz_bank.
 
 diff --git a/src/bank.c b/src/bank.c

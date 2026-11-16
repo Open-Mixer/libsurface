@@ -23,7 +23,8 @@
  *     master target on a geometry that has one, and nothing a strip past those; target_strip is the
  *     first strip that shows a target, and -1 for 0 and for a target off the window.
  *   - meters: every move of the window, and every new list, clears the meter steps (the next
- *     level of every strip paints at once); a call that moved nothing clears nothing.
+ *     level of every strip paints at once); a call that moved nothing clears nothing: a step,
+ *     show or jump that stayed, a refused list, a new master.
  */
 #include <surface/surface.h>
 
@@ -193,7 +194,11 @@ FUZZ_CHECK check_meters(unsigned calls, int cleared)
 	 * mutant: src/bank.c:61 `meters_reset(s);` -> ``
 	 * input: meters
 	 * mutant: src/bank.c:98 `meters_reset(s);` -> ``
-	 * input: meters */
+	 * input: meters
+	 * mutant: src/bank.c:54 `return SURFACE_E_ARG;` -> `return meters_reset(s), SURFACE_E_ARG;`
+	 * input: set-refusal
+	 * mutant: src/bank.c:133 `s->master = t;` -> `s->master = t, meters_reset(s);`
+	 * input: master */
 	if (calls != want)
 		abort();
 }
@@ -239,6 +244,8 @@ static void do_set(struct fuzz_in *in)
 		memcpy(W.list, l, W.n * sizeof *l);
 		m_move((long)W.offset);
 		check_meters(meters_probe(), 1);
+	} else {
+		check_meters(meters_probe(), 0);
 	}
 	check_window(S, 0, 0);
 	free(l);
@@ -287,9 +294,11 @@ static void do_jump(struct fuzz_in *in)
 static void do_master(struct fuzz_in *in)
 {
 	surface_target t = targets[fuzz_u8(in) % 9];
+	meters_prime();
 	surface_master_set(S, t);
 	if (W.g.has_master)
 		W.master = t;
+	check_meters(meters_probe(), 0);
 	check_all(t);
 }
 

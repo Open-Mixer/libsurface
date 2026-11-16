@@ -27,10 +27,13 @@
  *     is the range's end), unless it is the motor reporting where it put the cap: no hand on the
  *     cap, a device that reports its motor, a frame within the tolerance of the last write; and
  *     surface_fader_is_report() says the same.
+ *   - release position: a release of a strip that had a report is at the last reported raw /
+ *     fader_max, where the hand left the cap.
  *   - passthrough: a key, a V-Pot, a jog and a warning reach the host once, as they came, the
- *     V-Pot only for a strip of the bank.
- *   - clock: surface_deadline() is never in the past and is UINT64_MAX when nothing waits; a
- *     tick before it does nothing; a tick at it leaves nothing due.
+ *     V-Pot only for a strip of the bank, with the target the harness's own bank window shows.
+ *   - clock: surface_deadline() is never in the past and is UINT64_MAX when nothing waits (no
+ *     hand, no pending release, no flush that a served value, a paint or a report could have
+ *     armed); a tick before it does nothing; a tick at it leaves nothing due.
  */
 #include <surface/surface.h>
 
@@ -50,6 +53,14 @@ static struct {
 	uint8_t flag[NS], pending[NS];
 	uint64_t until[NS], release_at[NS];
 	uint16_t last_raw[NS];
+	uint8_t have_report[NS];   /* a fader report reached this strip */
+	/* the bank, as the harness holds it: the list, the window's offset, the master */
+	unsigned cap;
+	surface_target list[16];
+	size_t nlist, offset;
+	surface_target master;
+	/* a served value, a paint or a fader report was ever given: a trailing flush may be armed */
+	int flushable;
 	/* the last position written to each cap */
 	uint8_t cmd_set[NS];
 	uint16_t cmd[NS];
@@ -142,6 +153,17 @@ FUZZ_CHECK check_event_position(const struct surface_event *ev)
 		abort();
 }
 
+FUZZ_CHECK check_release_position(const struct surface_event *ev)
+{
+	/* A release of a strip that had a fader report says where the hand left the cap: the last
+	 * raw the device reported, held to the range, over fader_max.
+	 * contract: surface.h SURFACE_EV_FADER_RELEASED ("position: where the hand left it")
+	 * mutant: src/surface.c:148 `return (double)st->last_raw / s->g.fader_max;` -> `return 1 - (double)st->last_raw / s->g.fader_max;`
+	 * input: release-position */
+	if (W.have_report[ev->strip] && ev->position != (double)W.last_raw[ev->strip] / W.g.fader_max)
+		abort();
+}
+
 static void on_event(void *ctx, const struct surface_event *ev)
 {
 	(void)ctx;
@@ -154,6 +176,7 @@ static void on_event(void *ctx, const struct surface_event *ev)
 		break;
 	case SURFACE_EV_FADER_RELEASED:
 		check_event_position(ev);
+		check_release_position(ev);
 		W.obs.released[ev->strip]++;
 		break;
 	case SURFACE_EV_FADER_MOVED:
@@ -241,6 +264,8 @@ FUZZ_CHECK check_passthrough(int ok, unsigned want)
 	 * mutant: src/surface.c:304 `.key = key, .on = pressed ? 1 : 0` -> `.key = key, .on = pressed & 1`
 	 * input: passthrough
 	 * mutant: src/surface.c:315 `.target = surface_strip_target(s, strip)` -> `.target = 0`
+	 * input: passthrough
+	 * mutant: src/bank.c:113 `return i < s->nlist ? s->list[i] : 0;` -> `return i + 1 < s->nlist ? s->list[i + 1] : 0;`
 	 * input: passthrough */
 	if (!ok || owe_events != want)
 		abort();
@@ -280,12 +305,57 @@ FUZZ_CHECK check_due(uint64_t d, uint64_t now)
 
 FUZZ_CHECK check_quiet(uint64_t d)
 {
-	/* A surface with nothing in flight waits for nothing.
+	/* A surface with nothing in flight waits for nothing: on the new surface, and after any
+	 * operation that leaves no hand on a cap, no release waiting out its debounce, and no
+	 * trailing flush that could be armed (no served value, paint or fader report yet).
 	 * contract: surface.h surface_deadline ("or UINT64_MAX when nothing waits")
 	 * mutant: src/motor.c:343 `UINT64_MAX` -> `0`
-	 * input: clock */
+	 * input: clock
+	 * mutant: src/surface.c:542 `st->touch && s->g.touch_hold_ms` -> `(st->touch || st->touch_until > now_us) && s->g.touch_hold_ms`
+	 * input: touches */
 	if (d != UINT64_MAX)
 		abort();
+}
+
+/* ---- the bank, as surface.h describes it (fuzz_bank holds the same window) ---------------- */
+
+static size_t m_max(void)
+{
+	return W.nlist > W.g.strips ? W.nlist - W.g.strips : 0;
+}
+
+static void m_move(long to)
+{
+	W.offset = to < 0 ? 0 : (size_t)to;
+	if (W.offset > m_max())
+		W.offset = m_max();
+}
+
+static void m_set(const surface_target *l, size_t n)
+{
+	W.nlist = n < W.cap ? n : W.cap;
+	memcpy(W.list, l, W.nlist * sizeof *l);
+	m_move((long)W.offset);
+}
+
+static surface_target m_target(unsigned strip)
+{
+	if (strip < W.g.strips)
+		return W.offset + strip < W.nlist ? W.list[W.offset + strip] : 0;
+	if (strip == W.g.strips && W.g.has_master)
+		return W.master;
+	return 0;
+}
+
+/* nothing waits: no hand, no release pending, no flush that could be armed */
+static int m_quiet(void)
+{
+	if (W.flushable)
+		return 0;
+	for (unsigned k = 0; k < NS; k++)
+		if (W.flag[k] || W.pending[k])
+			return 0;
+	return 1;
 }
 
 /* ---- the program -------------------------------------------------------------------------- */
@@ -373,6 +443,8 @@ static void do_fader(struct fuzz_in *in)
 		int report = W.g.reports_motor_moves && !held(strip, W.now) && W.cmd_set[strip] &&
 			(diff < 0 ? -diff : diff) <= (int)W.g.motor_epsilon_q;
 		W.last_raw[strip] = c;
+		W.have_report[strip] = 1;
+		W.flushable = 1;
 		if (!report)
 			owe.moved = 1;
 	}
@@ -398,6 +470,7 @@ static void do_served(struct fuzz_in *in)
 	double pos = spec_unit(fuzz_double(in));   /* contract: surface.h "A served value ..., 0..1" */
 	uint8_t form = fuzz_u8(in);
 	begin();
+	W.flushable = 1;
 	if (form & 1) {
 		uint64_t back = (uint64_t)(form >> 1) * 7 * MS_US;
 		uint64_t sent = back > W.now ? 0 : form & 0x80 ? W.now + back : W.now - back;
@@ -420,6 +493,7 @@ static void do_paint(struct fuzz_in *in)
 	surface_target t = pick_target(in);
 	double pos = spec_unit(fuzz_double(in));
 	begin();
+	W.flushable = 1;
 	surface_fader_paint(S, t, pos, W.now);
 	settle();
 }
@@ -429,6 +503,7 @@ static void do_paint_strip(struct fuzz_in *in)
 	unsigned strip = pick_strip(in);
 	double pos = spec_unit(fuzz_double(in));
 	begin();
+	W.flushable = 1;
 	surface_fader_paint_strip(S, strip, pos, W.now);
 	settle();
 }
@@ -492,10 +567,16 @@ static void do_bank(struct fuzz_in *in)
 		for (size_t i = 0; i < n; i++)
 			l[i] = (surface_target)(1 + fuzz_u8(in) % 13);
 		surface_bank_set(S, l, n);
+		m_set(l, n);
 	} else if (form & 2) {
-		surface_bank_step(S, (int)(int8_t)fuzz_u8(in));
+		int delta = (int)(int8_t)fuzz_u8(in);
+		surface_bank_step(S, delta);
+		m_move((long)W.offset + delta);
 	} else {
-		surface_master_set(S, pick_target(in));
+		surface_target t = pick_target(in);
+		surface_master_set(S, t);
+		if (W.g.has_master)
+			W.master = t;
 	}
 }
 
@@ -516,7 +597,7 @@ static void do_passthrough(struct fuzz_in *in)
 		want = strip < W.g.strips;
 		surface_in_vpot(S, strip, delta, W.now);
 		ok = !want || (W.last.kind == SURFACE_EV_VPOT && W.last.strip == strip && W.last.delta == delta &&
-			       W.last.target == surface_strip_target(S, strip));
+			       W.last.target == m_target(strip));
 	} else if (form == 2) {
 		int delta = (int)(int16_t)fuzz_u16(in);
 		surface_in_jog(S, delta, W.now);
@@ -569,6 +650,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 	W.g = c.geometry;
 	W.nstrips = W.g.strips + (W.g.has_master ? 1u : 0u);
 	W.accept = 1;
+	W.cap = c.max_targets ? c.max_targets : 256;
 	W.now = 1000000ull + (uint64_t)fuzz_u16(&in) * 1000ull;
 	if (surface_create(&S, &c) != SPEC_OK)
 		return 0;
@@ -576,7 +658,10 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 	check_quiet(surface_deadline(S, W.now));
 	surface_target l[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 	surface_bank_set(S, l, 8);
+	m_set(l, 8);
 	surface_master_set(S, 9);
+	if (W.g.has_master)
+		W.master = 9;
 	while (!fuzz_done(&in)) {
 		uint8_t op = fuzz_u8(&in);
 		switch (op % 17) {
@@ -601,6 +686,8 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 				do_tick(op >> 7);
 			break;
 		}
+		if (m_quiet())
+			check_quiet(surface_deadline(S, W.now));
 		W.now = fuzz_step(&in, W.now);
 	}
 	surface_destroy(S);

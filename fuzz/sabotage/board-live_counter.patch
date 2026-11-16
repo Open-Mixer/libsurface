@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:381 (memcpys->counter, text, n; -> memcpys->counter, text, n ? n - 1 : 0;).
+Breaks the check of fuzz/fuzz_board.c:387 (memcpys->counter, text, n; -> memcpys->counter, text, n ? n - 1 : 0;).
 Caught by the seed input "counters" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c

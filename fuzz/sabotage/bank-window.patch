@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_bank.c:145 (at < 0 ? 0 : size_tat -> at < 0 ? 1 : size_tat).
+Breaks the check of fuzz/fuzz_bank.c:146 (at < 0 ? 0 : size_tat -> at < 0 ? 1 : size_tat).
 Caught by the seed input "steps" of fuzz_bank.
 
 diff --git a/src/bank.c b/src/bank.c

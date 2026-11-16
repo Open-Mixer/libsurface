@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_bank.c:168 (i < s->nlist ? s->list[i] : 0 -> i <= s->nlist ? s->list[i] : 0).
+Breaks the check of fuzz/fuzz_bank.c:169 (i < s->nlist ? s->list[i] : 0 -> i <= s->nlist ? s->list[i] : 0).
 Caught by the seed input "steps" of fuzz_bank.
 
 diff --git a/src/bank.c b/src/bank.c

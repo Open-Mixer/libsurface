@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:92 (!s->online || -> ).
+Breaks the check of fuzz/fuzz_motor.c:103 (!s->online || -> ).
 Caught by the seed input "offline" of fuzz_motor.
 
 diff --git a/src/motor.c b/src/motor.c

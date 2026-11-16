@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:93 (an LED is written at another key than the host's).
+Breaks the check of fuzz/fuzz_board.c:98 (an LED is written at another key than the host's).
 Caught by the seed input "leds" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c

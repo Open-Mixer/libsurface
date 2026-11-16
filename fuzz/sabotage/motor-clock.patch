@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:257 (return d < now_us ? now_us : d; -> return d < now_us ? now_us - 1 : d;).
+Breaks the check of fuzz/fuzz_motor.c:282 (return d < now_us ? now_us : d; -> return d < now_us ? now_us - 1 : d;).
 Caught by the seed input "clock-c24" of fuzz_motor.
 
 diff --git a/src/surface.c b/src/surface.c
