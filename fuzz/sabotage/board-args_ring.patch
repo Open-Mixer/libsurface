@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:115 (p ? span0, p - 1 : 0 -> p ? span0, p : 0).
+Breaks the check of fuzz/fuzz_board.c:120 (p ? span0, p - 1 : 0 -> p ? span0, p : 0).
 Caught by the seed input "ring-full" of fuzz_board.
 
 diff --git a/src/meter.c b/src/meter.c

@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_motor.c:81 (The motor writes no cap a hand holds. The Control|24 holds its own set-point and is).
+Breaks the check of fuzz/fuzz_motor.c:92 (The motor writes no cap a hand holds. The Control|24 holds its own set-point and is).
 Caught by the seed input "hand" of fuzz_motor.
 
 diff --git a/src/motor.c b/src/motor.c

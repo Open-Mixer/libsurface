@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:224 (n = s->g.strips; -> n = s->g.strips + 1;).
+Breaks the check of fuzz/fuzz_board.c:230 (n = s->g.strips; -> n = s->g.strips + 1;).
 Caught by the seed input "colours" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c

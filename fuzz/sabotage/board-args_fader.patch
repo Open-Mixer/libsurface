@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:104 (return 0; -> return s->g.fader_max + 1;).
+Breaks the check of fuzz/fuzz_board.c:109 (return 0; -> return s->g.fader_max + 1;).
 Caught by the seed input "online-blank" of fuzz_board.
 
 diff --git a/src/motor.c b/src/motor.c

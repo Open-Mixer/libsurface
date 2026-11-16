@@ -621,6 +621,16 @@ static void gen_motor(void)
 	m_touch(2, 1); m_touch(2, 0); m_online(); m_deadline(1);
 	m_touch(5, 0); m_touch(5, 1); m_touch(5, 1); m_touch(5, 0); m_touch(5, 0); m_deadline(1); m_deadline(1);
 	emit("motor", "c24-touches");
+	/* a release says where the hand left the cap: after a report, at once and on a lapsed hold */
+	m_head(0, 0, 0);
+	m_online();
+	m_touch(0, 1); m_fader(0, 4000); m_touch(0, 0);
+	m_touch(1, 1); m_fader(1, 12000); m_deadline(1); m_deadline(1);
+	emit("motor", "release-position");
+	m_head(1, 0, 0);
+	m_online();
+	m_touch(0, 1); m_fader(0, 300); m_touch(0, 0); m_deadline(1); m_deadline(1);
+	emit("motor", "release-position-c24");
 	/* the motor's report: a frame at where a write put the cap is not a gesture */
 	m_head(0, 0, 0);
 	m_online();

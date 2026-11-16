@@ -29,7 +29,8 @@
  *     ring mask within its LEDs, a strip, row and side that exist.
  *   - replay: after the device comes online, the board it shows is the host's whole intent, no
  *     more and no less: every LED, ring, scribble row, the counter and the colours.
- *   - blank: a blanked strip shows spaces in every row and an empty ring, and replays so.
+ *   - blank: a blanked strip shows spaces in every row and an empty ring, and replays so; on an
+ *     online device every side of its meter is written, and written 0.
  */
 #include <surface/surface.h>
 
@@ -72,7 +73,11 @@ static struct {
 	struct board dev;
 	struct host host;
 	int has_ring_code, has_colour;
+	/* the level each strip and side shows, as the meter calls left it; METER_UNSEEN before any */
+	unsigned meter[SPEC_MAX_STRIPS][2];
 } W;
+
+#define METER_UNSEEN 0xffffffffu
 
 /* the slot of a key the harness wrote, or -1 for a key it never wrote */
 static int key_index(uint16_t key)
@@ -185,6 +190,7 @@ static int op_meter(void *b, unsigned strip, unsigned side, unsigned segments)
 	(void)b;
 	W.calls++;
 	check_args_meter(strip, side, segments);
+	W.meter[strip][side] = segments;
 	return 1;
 }
 
@@ -410,6 +416,22 @@ FUZZ_CHECK check_blank(unsigned strip)
 		abort();
 }
 
+FUZZ_CHECK check_blank_meter(unsigned strip)
+{
+	int bad = 0;
+	for (unsigned side = 0; side < W.g.meter_sides; side++)
+		bad |= W.meter[strip][side] != 0;
+	/* A blanked strip on an online device shows an empty meter on every side: each side is
+	 * written, and written 0.
+	 * contract: surface.h surface_blank_strip ("its scribble rows, ring and meter blank")
+	 * mutant: src/surface.c:453 `side, 0) > 0` -> `side, s->g.meter_segments) > 0`
+	 * input: online-blank
+	 * mutant: src/surface.c:453 `s->online && s->ops.meter` -> `!s->online && s->ops.meter`
+	 * input: online-blank */
+	if (bad)
+		abort();
+}
+
 FUZZ_CHECK check_replay(void)
 {
 	const struct board *w = &W.host.want, *d = &W.dev;
@@ -603,6 +625,9 @@ static void do_blank(struct surface *s, struct fuzz_in *in)
 {
 	unsigned strip = pick_strip(in);
 	unsigned before = W.calls;
+	if (strip < W.g.strips)
+		for (unsigned side = 0; side < 2; side++)
+			W.meter[strip][side] = METER_UNSEEN;
 	int rc = surface_blank_strip(s, strip);
 	check_refusal(rc, strip >= W.g.strips);
 	check_offline(before);
@@ -616,8 +641,10 @@ static void do_blank(struct surface *s, struct fuzz_in *in)
 	w->ring_seen[strip] = 1;
 	w->ring_code[strip] = 0;
 	w->ring[strip] = 0;
-	if (W.online)
+	if (W.online) {
 		check_blank(strip);
+		check_blank_meter(strip);
+	}
 }
 
 static void do_online(struct surface *s, struct fuzz_in *in)

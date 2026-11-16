@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_bank.c:198 (meters_resets; -> ).
+Breaks the check of fuzz/fuzz_bank.c:203 (meters_resets; -> ).
 Caught by the seed input "meters" of fuzz_bank.
 
 diff --git a/src/bank.c b/src/bank.c

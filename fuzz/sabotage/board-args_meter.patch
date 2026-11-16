@@ -1,4 +1,4 @@
-Breaks the check of fuzz/fuzz_board.c:180 (side, 0 > 0 -> side, 255 > 0).
+Breaks the check of fuzz/fuzz_board.c:185 (side, 0 > 0 -> side, 255 > 0).
 Caught by the seed input "online-blank" of fuzz_board.
 
 diff --git a/src/surface.c b/src/surface.c
