@@ -277,6 +277,7 @@ test: $(TESTS) $(KEYS_TEST) $(UB_TEST)
 	$(RUN_TEST) tests/diginet/test_no_emu_copy_sabotage.sh
 	$(RUN_TEST) tests/test_install.sh
 	$(RUN_TEST) tests/conformance-packaging.sh
+	$(RUN_TEST) tests/floors-only.sh
 	$(RUN_TEST) tests/test_workflows.sh
 	@$(MAKE) --no-print-directory test-diginet
 	@$(MAKE) --no-print-directory test-mackie
