@@ -138,7 +138,6 @@ test-diginet: diginet-emu-found $(DTESTS) $(C24)
 	$(RUN_TEST) tests/diginet/test_diginet
 	$(RUN_TEST) tests/diginet/test_c24_tool "$(DIGINET_HELPER)" $(C24)
 	$(RUN_TEST) tests/diginet/test_install.sh "$(DIGINET_SRC)"
-	$(RUN_TEST) tests/diginet/no-emu-copy-sabotage.sh "$(EMU_INC)"
 
 # the module's tests need the harness: a libdiginet without it is a failure, not a skip
 .PHONY: diginet-emu-found
@@ -273,8 +272,7 @@ test: $(TESTS) $(KEYS_TEST) $(UB_TEST)
 	$(RUN_TEST) tests/test_c24_keys
 	$(RUN_TEST) tests/test_colour_null
 	$(RUN_TEST) tests/constants-check.sh
-	$(RUN_TEST) tests/diginet/no-emu-copy.sh
-	$(RUN_TEST) tests/diginet/test_no_emu_copy_sabotage.sh
+	$(RUN_TEST) tests/diginet/no-emu-copy.sh --self-test
 	$(RUN_TEST) tests/test_install.sh
 	$(RUN_TEST) tests/conformance-packaging.sh
 	$(RUN_TEST) tests/floors-only.sh
