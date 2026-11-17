@@ -50,7 +50,7 @@ What the repository publishes is checked by Open-Mixer/.github's shared checks, 
 through its `public-sources-check` workflow: a pull request's commit messages carry no
 attribution line, and no tracked file points into a private repository. `make public-sources`
 runs the second from a checkout of Open-Mixer/.github (`OPENMIXER_DOTGITHUB`, else
-`../freemixer-dotgithub`). The commit-msg hook in `.githooks/` runs the first; enable it once
+`~/.cache/omx/openmixer-dotgithub`, the cache clone). The commit-msg hook in `.githooks/` runs the first; enable it once
 per clone with `git config core.hooksPath .githooks`.
 
 ## The DigiNet module

@@ -5,6 +5,6 @@ includedir=@INCDIR@
 Name: libsurface-mackie
 Description: libsurface's Mackie module: an MCU surface such as the X-Touch under libsurface, over libmackie
 Version: @VERSION@
-Requires: libsurface libmackie >= 0.1.0, libmackie < 0.2
+Requires: libsurface libmackie >= 0.1.0
 Libs: -L${libdir} -lsurface-mackie
 Cflags: -I${includedir}

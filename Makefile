@@ -277,14 +277,15 @@ test: $(TESTS) $(KEYS_TEST) $(UB_TEST)
 	$(RUN_TEST) tests/diginet/test_no_emu_copy_sabotage.sh
 	$(RUN_TEST) tests/test_install.sh
 	$(RUN_TEST) tests/conformance-packaging.sh
+	$(RUN_TEST) tests/floors-only.sh
 	$(RUN_TEST) tests/test_workflows.sh
 	@$(MAKE) --no-print-directory test-diginet
 	@$(MAKE) --no-print-directory test-mackie
 
 # No tracked file points into a private repository: Open-Mixer/.github's private-refs check, from a
-# checkout of it (OPENMIXER_DOTGITHUB, else ../freemixer-dotgithub). CI runs it, with the commit
+# checkout of it (OPENMIXER_DOTGITHUB, else the cache clone, $(HOME)/.cache/omx/openmixer-dotgithub). CI runs it, with the commit
 # message check, through the public-sources-check workflow; `make test` does not need it.
-OPENMIXER_DOTGITHUB ?= ../freemixer-dotgithub
+OPENMIXER_DOTGITHUB ?= $(HOME)/.cache/omx/openmixer-dotgithub
 public-sources:
 	$(OPENMIXER_DOTGITHUB)/.github/actions/private-refs-check/check.sh .
 
