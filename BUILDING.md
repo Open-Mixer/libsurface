@@ -91,9 +91,9 @@ The module's tests, in `tests/diginet/`, run after the core's:
 - the tests run on libdiginet's desk emulator and child harness, `libdiginet-emu` (libdiginet
   0.1.8 and later install them as test support), from `DIGINET_SRC` or through pkg-config; without
   `diginet/testsupport/emu_child.h` they fail;
-- `no-emu-copy.sh` (in every `make test`): no C file of this tree defines the emulator again,
-  and `no-emu-copy-sabotage.sh` puts a copy of libdiginet's `desk_emu.h` back in a scratch copy
-  of the tree and requires that check to go red on it.
+- `no-emu-copy.sh --self-test` (in every `make test`): no C file of this tree defines the emulator
+  again, and in a scratch copy of the tree (with and without git metadata) a planted copy of
+  `desk_emu.h` must turn the check red and its removal green.
 
 ## The Mackie module
 

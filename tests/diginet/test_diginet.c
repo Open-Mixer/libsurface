@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2026 Pau Aliagas <linuxnow@gmail.com>
 
-/* libsurface-diginet against libdiginet's desk emulator (a copy beside this file), in process,
+/* libsurface-diginet against libdiginet's desk emulator (libdiginet-emu's, installed: no copy of it
+ * lives in this tree, tests/diginet/no-emu-copy.sh forbids one), in process,
  * on a virtual clock: the backend's mux sends each frame to the emulator, the emulator's frames
  * come back through surface_diginet_rx(), and what the desk received is decoded from its log. The
  * host is a console that echoes every move as its served value, after the call that reported it.
