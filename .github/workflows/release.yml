@@ -3,7 +3,7 @@
 name: release
 
 # Packages through the shared release workflows of Open-Mixer/.github. A tag v<version> builds signed
-# RPMs (Fedora 44, x86_64 and aarch64) and DEBs (Debian bookworm and trixie, amd64 and arm64),
+# RPMs (Fedora 45, x86_64 and aarch64) and DEBs (Debian bookworm and trixie, amd64 and arm64),
 # publishes them to the OpenMixer channel and attaches them to the GitHub release. A dispatched run
 # (workflow_dispatch) is a dry run: it builds and lints everything and publishes nothing.
 #
@@ -48,7 +48,7 @@ jobs:
       # libdiginet-dev with the desk mux, for the DigiNet module
       channel-deps: true
     secrets: inherit
-  # the cells the RPMs are installed in: check-matrix's answer (rule 11-10: fc45 beside fc44;
+  # the cells the RPMs are installed in: check-matrix's answer (Fedora 45 alone;
   # the quick set while a release wave is open, the whole matrix declared here otherwise)
   checks:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
         uses: Open-Mixer/.github/.github/actions/check-matrix@openmixer-v1
         with:
           wave: ${{ vars.OMX_RELEASE_MATRIX }}
-          rpm-releases: '["44", "45"]'
+          rpm-releases: '["45"]'
           rpm-arches: '["x86_64", "aarch64"]'
 
 
