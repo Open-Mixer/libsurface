@@ -27,3 +27,10 @@ jobs:
   # local copy of either (Open-Mixer/.github's public-sources-check)
   public-sources:
     uses: Open-Mixer/.github/.github/workflows/public-sources-check.yml@openmixer-v1
+
+  pr-fixes-issue:
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: read
+    uses: Open-Mixer/.github/.github/workflows/pr-fixes-issue.yml@openmixer-v1
