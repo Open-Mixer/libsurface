@@ -40,6 +40,7 @@ jobs:
   deb:
     uses: Open-Mixer/.github/.github/workflows/build-deb.yml@openmixer-v1
     with:
+      enabled: false # ships no Debian package (owner ruling 2026-11-19: Zynthian never needs it); the debian/ directory stays, served debs stay
       package-name: libsurface
       binary-names: libsurface0 libsurface-dev libsurface-diginet0 libsurface-diginet-dev libsurface-mackie0 libsurface-mackie-dev surface-c24
       publish: ${{ github.ref_type == 'tag' }}
